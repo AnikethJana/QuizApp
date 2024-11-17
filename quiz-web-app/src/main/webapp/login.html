@@ -1,0 +1,100 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <title>Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="login_style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Titillium+Web:400,300,600" rel="stylesheet">
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous">
+  <script>
+  function submitForm(event) {
+    event.preventDefault(); // Prevent the default form submission
+    var form = document.getElementById("loginForm");
+    var formData = new FormData(form);
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "LoginServlet", true);
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        var messageDiv = document.querySelector("#messageDiv");
+        if (!messageDiv) {
+          messageDiv = document.createElement('div');
+          messageDiv.id = "messageDiv";
+          messageDiv.style.position = 'fixed';
+          messageDiv.style.bottom = '10px';
+          messageDiv.style.right = '10px';
+          messageDiv.style.backgroundColor = 'rgba(255, 0, 0, 0.7)';
+          messageDiv.style.color = 'white';
+          messageDiv.style.padding = '10px';
+          messageDiv.style.borderRadius = '5px';
+          messageDiv.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+          messageDiv.style.fontFamily = 'Arial, sans-serif';
+          document.body.appendChild(messageDiv);
+        }
+
+        if (xhr.status === 200) {
+          var response = JSON.parse(xhr.responseText);
+          if (response.success) {
+            // Success - redirect to the URL provided
+            window.location.href = "askquiz.html";
+          } else {
+            // Show error message
+            messageDiv.style.backgroundColor = 'rgba(255, 0, 0, 0.7)';
+            messageDiv.innerHTML = "Login Unsuccessful.";
+          }
+        } else if (xhr.status === 401) {
+          // Unauthorized
+          messageDiv.style.backgroundColor = 'rgba(255, 0, 0, 0.7)';
+          messageDiv.innerHTML = "Invalid email or password.";
+        } else {
+          // Server error
+          messageDiv.style.backgroundColor = 'rgba(255, 0, 0, 0.7)';
+          messageDiv.innerHTML = "An error occurred. Please try again.";
+        }
+        setTimeout(() => messageDiv.remove(), 3000);
+      }
+    };
+    xhr.send(formData);
+  }
+
+  function show() {
+    var password = document.getElementById("password");
+    var icon = document.querySelector(".fas");
+    if (password.type === "password") {
+      password.type = "text";
+      icon.classList.remove("fa-eye");
+      icon.classList.add("fa-eye-slash");
+    } else {
+      password.type = "password";
+      icon.classList.remove("fa-eye-slash");
+      icon.classList.add("fa-eye");
+    }
+  }
+  </script>
+</head>
+
+<body class="body">
+  <div class="login-page">
+    <div class="form">
+      <form id="loginForm" onsubmit="submitForm(event)" enctype="multipart/form-data">
+        <lottie-player src="https://assets4.lottiefiles.com/datafiles/XRVoUu3IX4sGWtiC3MPpFnJvZNq7lVWDCa8LSqgS/profile.json" 
+          background="transparent" speed="1" style="display: flex; justify-content: center;" loop autoplay>
+        </lottie-player>
+        <input type="text" placeholder="&#xf007; email" id="email" name="email" required aria-label="Enter your email" />
+        <input type="password" id="password" name="password" placeholder="&#xf023; password" required aria-label="Enter your password" />
+        <i class="fas fa-eye" onclick="show()" aria-label="Toggle password visibility"></i>
+        <br><br>
+        <button type="submit">LOGIN</button>
+        <p id="message"></p>
+      </form>
+
+      <form class="login-form">
+        <button type="button" onclick="window.location.href='signup.html'">SIGN UP</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

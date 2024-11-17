@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Sign Up</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <link rel="stylesheet" type="text/css" href="signup_style.css" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+  />
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+  <link
+    rel="stylesheet"
+    href="https://use.fontawesome.com/releases/v5.15.1/css/all.css"
+    crossorigin="anonymous"
+  />
+</head>
+
+<body>
+  <div class="login-page">
+    <div class="form">
+      <form id="signUpForm" onsubmit="submitForm(event)" >
+        <lottie-player
+          src="https://assets4.lottiefiles.com/datafiles/XRVoUu3IX4sGWtiC3MPpFnJvZNq7lVWDCa8LSqgS/profile.json"
+          background="transparent"
+          speed="1"
+          style="justify-content: center"
+          loop
+          autoplay
+        ></lottie-player>
+        <input type="text" placeholder="Full Name" id="name" name="name" required />
+        <input
+          type="email"
+          placeholder="Email Address"
+          id="email"
+          name="email"
+          required
+        />
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Set a Password"
+          required
+        />
+        <input
+          type="number"
+          placeholder="Age"
+          id="age"
+          name="age"
+          required
+          min="1"
+          max="120"
+        />
+        <button type="submit">SIGN UP</button>
+      </form>
+      <div id="responseMessage" style="color: green; margin-top: 10px;"></div>
+    </div>
+  </div>
+
+  <script>
+    function submitForm(event) {
+      event.preventDefault();
+
+      const form = document.getElementById("signUpForm");
+      const formData = new FormData(form);
+
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", "RegisterServlet", true);
+
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+          const responseMessage = document.getElementById("responseMessage");
+          responseMessage.style.color = "red";
+
+          if (xhr.status === 200) {
+            responseMessage.style.color = "green";
+            responseMessage.textContent = "Registration Successful. Redirecting...";
+            
+            // Redirect after 2 seconds
+            setTimeout(() => {
+              window.location.href = "login.html";
+            }, 2000);
+          } else {
+            responseMessage.textContent = "Error: Unable to contact the server.";
+          }
+        }
+      };
+
+      xhr.send(formData);
+    }
+  </script>
+</body>
+</html>
